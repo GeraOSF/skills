@@ -6,18 +6,14 @@ My agent skills, kept here so every machine runs the same versions.
 
 ## Install
 
+This repo is private, so each machine needs GitHub access first: `gh auth login`, then `gh auth setup-git`.
+
 ```sh
-npx skills add GeraOSF/skills -g
+pnpx skills add GeraOSF/skills -g
 ```
 
-Update later with `npx skills update -g`.
+Update with `pnpx skills update -g`.
 
 ## Edit
 
-Where you edit skills, link the clone instead of installing a copy, so changes land in the repo:
-
-```sh
-git clone https://github.com/GeraOSF/skills ~/code/general/skills
-ln -s ~/code/general/skills/skills/deep-review ~/.agents/skills/deep-review
-ln -s ../../.agents/skills/deep-review ~/.claude/skills/deep-review
-```
+Edit skills here on GitHub, then update each machine. Don't edit the installed copies; the next update overwrites them.
