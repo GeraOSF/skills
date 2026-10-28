@@ -9,7 +9,7 @@ My agent skills, kept here so every machine runs the same versions.
 This repo is private, so each machine needs GitHub access first: `gh auth login`, then `gh auth setup-git`.
 
 ```sh
-pnpx skills add GeraOSF/skills
+npx skills add GeraOSF/skills
 ```
 
-Update with `pnpx skills update`.
+Update with `npx skills update`.
