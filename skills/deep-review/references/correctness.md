@@ -7,7 +7,7 @@ Trace instead of assuming: follow callers, consumers of changed types, serialize
 ## What to look for
 
 - **Bugs**: logic errors, missed edge cases, contracts changed under callers that still rely on them, races, swallowed or mishandled errors, data written in one shape and read in another.
-- **Security**: untrusted input reaching queries, commands, prompts, or file paths; missing auth or ownership checks; secrets in code, logs, or client bundles; trusting client-supplied state; resource use a caller can make unbounded.
+- **Security**: untrusted input reaching queries, commands, prompts, or file paths; missing auth or ownership checks; secrets in code, logs, or client bundles; trusting client-supplied state; resource use a caller can make unbounded; new or bumped dependencies with a lookalike name, an install script, or a known advisory.
 - **Broken local setup**: changes to how or where secrets and env vars are read, renamed or newly required variables, changed ports, new manual steps. A new dependency counts only if it needs something outside the normal workflow, like a manual install; a new alternative way to run something doesn't count.
 - **Feature leaks**: where features sit behind flags or internal-only checks, nothing gated may leak, including indirectly through a shared component, a default, or a route.
 
