@@ -12,7 +12,7 @@ Inline a function called from one place, a variable read once right after it is 
 - is a React component or hook (a render and Rules-of-Hooks boundary);
 - is called directly by a test;
 - is recursive, or must keep a stable reference (a listener added and later removed);
-- is decorated or wrapped (`@lru_cache`, `@retry`, `@transaction.atomic`): inlining drops the wrapper.
+- is decorated (`@lru_cache`, `@retry`), since inlining drops the decorator.
 
 Readability is not an exception: a well-named function called once is still a jump. If inlining makes the caller hard to follow, the caller needs restructuring, and that is the finding.
 
@@ -38,7 +38,7 @@ Remove a comment that narrates the code; restates a visible name, type, or signa
 
 Keep one, trimmed to the fact, only when it states what the code cannot: an invariant nothing enforces ("caller holds the lock"), a non-obvious reason (a platform bug, an upstream quirk, a measured tradeoff, a deliberate deviation), or a warning that stops a sensible-looking edit from breaking something.
 
-Never touch comments a compiler, bundler, linter, test runner, or runtime reads: tool directives (`@ts-expect-error`, `eslint-disable`, `'use client'`, `//go:build`, `//go:embed`, `/*#__PURE__*/`, and the like), docstrings and doc comments that become help text or doctests (Click and Typer help, Python doctests, Rust `///` examples), and JSDoc types where the project type-checks JS. Never touch license headers and generated-file banners, `TODO`/`FIXME` for work not yet done, or prose in Markdown and other docs.
+Never touch comments a tool or runtime reads: directives (`@ts-expect-error`, `eslint-disable`, `'use client'`, `//go:build`, `/*#__PURE__*/`, and the like), docstrings and doc comments that become help text or doctests, and JSDoc types where the project type-checks JS. Nor license headers, generated-file banners, `TODO`/`FIXME` for work not yet done, or prose in Markdown and other docs.
 
 ## Each finding
 
