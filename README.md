@@ -2,7 +2,7 @@
 
 My agent skills, kept here so every machine runs the same versions.
 
-- `deep-review`: correctness, security, and quality review with independently verified findings.
+- `deep-review`: correctness, security, quality, and copy review with independently verified findings.
 
 ## Install
 
