@@ -2,7 +2,7 @@
 
 Check the user-facing text the change adds or edits, and its translations: labels, headings, buttons, messages, errors, empty states, emails, and notifications. Leave developer-facing text, such as logs, to the other passes.
 
-Read each string where users meet it: the component or template around it, the state it appears in, and what sits next to it. Then compare it with the product's existing text: the glossary (`CONTEXT.md`, `GLOSSARY.md`, or what the repo rules point to), and the existing strings, searched for the term and its synonyms.
+Read each string where users meet it: the component or template around it, the state it appears in, and what sits next to it. Then compare it with the product's existing text: the glossary, if the repo has one (the repo rules usually point to it), and the existing strings, searched for the term and its synonyms.
 
 ## What to look for
 

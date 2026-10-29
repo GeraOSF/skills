@@ -15,11 +15,11 @@ The arguments name the target (a commit, range, PR, paths, or `fixes`) and may e
 
 ## 1. Gather
 
-Note how to get the code under review, the files involved (leave out lockfiles, generated files, and vendored code, but note dependencies added or bumped), and the repo's agent instructions: `AGENTS.md` and `CLAUDE.md` at the root and in folders the change touches, plus the convention docs they point to. Reviewers read the code themselves; don't paste it into briefs.
+Note how to get the code under review, the files involved (leave out lockfiles, generated files, and vendored code, but note dependencies added or bumped), and the repo's agent instructions: `AGENTS.md`, `CLAUDE.md`, and other agents' rule files at the root and in folders the change touches, plus the convention docs they point to. Reviewers read the code themselves; don't paste it into briefs.
 
-Reviewers read files at the target's head. If those differ from the working tree (a PR not checked out, an older commit), make a detached worktree there (`git worktree add --detach <tmp> <sha>`; for a PR, fetch `pull/<n>/head` first), point every subagent at it, and remove it after the report.
+Reviewers read files at the target's head. If those differ from the working tree (a PR not checked out, an older commit), make a detached worktree there (`git worktree add --detach <tmp> <sha>`; for a PR, fetch its head first, such as `pull/<n>/head` on GitHub), point every subagent at it, and remove it after the report.
 
-Also note the outside systems that consume what the change emits or stores (analytics events and properties, log and metric names, API fields, persisted data, webhooks), and which ones this session can query read-only, such as through an MCP connector or CLI. To find what it emits, start from where the analytics and logging SDKs are imported, note the repo's wrappers around them (such as a `captureServerEvent` that wraps `posthog.capture`), and search the change for calls to both.
+Also note the outside systems that consume what the change emits or stores (analytics events and properties, log and metric names, API fields, persisted data, webhooks), and which ones this session can query read-only, such as through an MCP connector or CLI. To find what it emits, start from where the SDKs and clients for those systems are imported, note the repo's wrappers around them (such as a `track()` helper over the analytics SDK), and search the change for calls to both.
 
 ## 2. Review
 
@@ -101,7 +101,7 @@ Fill the template, leaving out empty sections. Number findings straight through 
 
 ## Unconfirmed risks
 
-- `path:line`: <risk>. Could not check: <what>. Settle by: <the action, saying if it needs the user, e.g. "you run `wrangler login`">.
+- `path:line`: <risk>. Could not check: <what>. Settle by: <the action, saying if it needs the user, e.g. "you log in to the provider's CLI, then I re-check">.
 
 ## Rejected in verification
 
@@ -118,4 +118,4 @@ Apply each finding as verified, correctness first, and overlapping fixes in the 
 
 Then re-read the whole applied diff against those standards, not only the files you remember editing: `git diff refs/worktree/deep-review/before $(sh <skill dir>/scripts/snapshot.sh)`. If code changed, not only comments, run the checks the repo's instructions name, as they say; if none are named, run the typecheck, lint, and tests for the touched files you can find (package scripts, Makefile, CI config), and say they were inferred. If a fix breaks a check, repair it when the cause is clear or revert it, and say which.
 
-After the last edit, run `sh <skill dir>/scripts/snapshot.sh after`. End with what was applied, each check's result, any open item that needs the user and what they would do, and a note that `/deep-review fixes` reviews the applied diff.
+After the last edit, run `sh <skill dir>/scripts/snapshot.sh after`. End with what was applied, each check's result, any open item that needs the user and what they would do, and a note that the `fixes` target reviews the applied diff.

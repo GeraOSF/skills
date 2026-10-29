@@ -9,7 +9,7 @@ Be ambitious about large simplifications, but don't assume one exists. Look for 
 Inline a function called from one place, a variable read once right after it is assigned, and a type used once. Keep a single-use function only when it:
 
 - is exported or part of a module's public surface;
-- is a React component or hook (a render and Rules-of-Hooks boundary);
+- is a UI component or hook (a render boundary, and in React a Rules-of-Hooks one);
 - is called directly by a test;
 - is recursive, or must keep a stable reference (a listener added and later removed);
 - is decorated (`@lru_cache`, `@retry`), since inlining drops the decorator.
@@ -26,7 +26,7 @@ Doesn't count: nested ternaries, long chains, `&&`/`||` as control flow, comma o
 
 - **Special cases bolted on**: new flags, nullable modes, or one-off branches in an unrelated flow. Propose the shape where the case is no longer special: its own module, a dispatcher, different ownership of the state.
 - **Wrong layer**: feature logic in a shared module, implementation details leaking through an API, a bespoke helper where a canonical one exists.
-- **Loose boundaries**: needless optionality, casts, `any` or `unknown` where a precise type fits, a silent fallback papering over an unclear invariant.
+- **Loose boundaries**: needless optionality, casts, a catch-all type (`any`, `unknown`, `interface{}`) where a precise one fits, a silent fallback papering over an unclear invariant.
 - **Half-applied or needlessly sequential work**: related updates that can be left half-done, independent async work run in sequence. Flag only when the fix also simplifies.
 - **Files**: never flag length; inlining lengthens some files on purpose. Suggest a split only when a file mixes concerns that change for different reasons.
 
