@@ -15,7 +15,7 @@ The arguments name the target (a commit, range, PR, paths, or `fixes`) and may e
 
 ## 1. Gather
 
-Note how to get the code under review, the files involved (leave out lockfiles, generated files, and vendored code, but note dependencies added or bumped), and the repo's agent instructions: `AGENTS.md`, `CLAUDE.md`, and other agents' rule files at the root and in folders the change touches, plus the convention docs they point to. Reviewers read the code themselves; don't paste it into briefs.
+Note how to get the code under review, the files involved (leave out lockfiles, generated files, and vendored code, but note dependencies added or bumped), and the repo's agent instructions: `AGENTS.md`, `CLAUDE.md`, and other agents' rule files at the root and in folders the change touches, plus the convention docs they point to. Skills committed to the repo count too, whether written for it or installed from elsewhere (such as under `.agents/skills` or `.claude/skills`): include those whose descriptions cover what the change touches. Reviewers read the code themselves; don't paste it into briefs.
 
 Reviewers read files at the target's head. If those differ from the working tree (a PR not checked out, an older commit), make a detached worktree there (`git worktree add --detach <tmp> <sha>`; for a PR, fetch its head first, such as `pull/<n>/head` on GitHub), point every subagent at it, and remove it after the report.
 
