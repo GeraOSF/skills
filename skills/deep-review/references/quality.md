@@ -1,6 +1,6 @@
 # Quality pass
 
-The change should be as simple as it can be without changing behavior: fewer functions, branches, layers, types, and lines for a reader to hold. Propose moves that delete code, not ones that rearrange or compress it.
+The change should fit how the codebase already works and be as simple as it can be without changing behavior: fewer functions, branches, layers, types, and lines for a reader to hold. Propose moves that delete code, not ones that rearrange or compress it.
 
 Be ambitious about large simplifications, but don't assume one exists. Look for a reframing that makes whole branches, helpers, modes, or layers disappear: reusing an abstraction the codebase already has, moving ownership of state so the conditionals around it vanish, collapsing duplicate paths. When the change is already direct, say so; a marginal finding costs more than it saves.
 
@@ -18,9 +18,13 @@ Readability is not an exception: a well-named function called once is still a ju
 
 ## Delete, don't compress
 
-Counts: dead code, unused parameters, unimported exports, unreachable branches; checks for states the types or every caller already rule out (trace it); annotations inference already gives; wrappers that add a layer but no behavior; early returns that remove nesting; logic the codebase already has (point to the existing helper); duplicate branches merged, or a conditional chain replaced by a lookup or typed model when that removes branches.
+Counts: dead code, unused parameters, unimported exports, unreachable branches; checks for states the types or every caller already rule out (trace it); annotations inference already gives; wrappers that add a layer but no behavior; early returns that remove nesting; logic the change repeats or the codebase already has (point to where it should live); tests that only re-check what types or schemas guarantee; duplicate branches merged, or a conditional chain replaced by a lookup or typed model when that removes branches.
 
 Doesn't count: nested ternaries, long chains, `&&`/`||` as control flow, comma operators, several statements on one line. They cut lines by making each one harder to read.
+
+## Fit
+
+A job the codebase already does one way, done another way here, is a Design finding, even though fixing it changes behavior. Report it even when the new way works, unless the change gives a reason that holds: each extra way of doing a job is one more thing every later change has to keep in step, and reusing the existing mechanism unchanged usually gives the smaller change. Name the precedent and what the difference costs. When the codebase does the job more than one way, say which way the change should follow and why.
 
 ## Structure
 
@@ -32,7 +36,7 @@ Doesn't count: nested ternaries, long chains, `&&`/`||` as control flow, comma o
 
 ## Comments
 
-Report the comments the change adds, plus existing ones it made untrue, as one grouped finding listing each with "remove" or "trim to: <text>". A naming or structure problem a removed comment was covering for is its own finding. Error or log text naming a symbol the change removed or renamed is untrue too: report it as its own finding, "rename to: <text>", which keeps behavior unless something matches on the text, such as a test or a log alert.
+Report the comments the change adds, plus existing ones it made untrue, as one grouped finding. A naming or structure problem a removed comment was covering for is its own finding. Error or log text naming a symbol the change removed or renamed is untrue too: report it as its own finding, "rename to: <text>", which keeps behavior unless something matches on the text, such as a test or a log alert.
 
 Remove a comment that narrates the code; restates a visible name, type, or signature; explains routine code or framework idioms; describes history (what changed, why it was refactored, which task added it); labels code already grouped clearly; gives a reason a competent reader would infer; or restates a fact defined elsewhere, which only goes stale. When unsure, remove it.
 
@@ -42,4 +46,6 @@ Never touch comments a tool or runtime reads: directives (`@ts-expect-error`, `e
 
 ## Each finding
 
-Name the payoff: which functions, branches, types, or lines go. No concrete payoff, no finding. Confirm the fix keeps outputs, side effects, errors, and order of effects the same.
+Name the payoff: which functions, branches, types, or lines go, or for a Design finding, what the difference costs. No concrete payoff, no finding.
+
+Verify: a quality fix keeps outputs, side effects, errors, and order of effects the same, and really leaves less code. A Design finding holds when the precedent exists, does the same job, and no reason to differ holds up when checked.
