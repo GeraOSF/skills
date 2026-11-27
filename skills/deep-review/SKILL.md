@@ -61,12 +61,14 @@ For each, check that:
 - the code at its location exists and does what the claim says;
 - the problem is real: trace callers, types, other modules, and the external consumers;
 - it matters: it names a failure someone hits, a false statement someone acts on, a departure someone must work around, or code that goes away. True but none of these is a rejection;
+- a failure only crafted input causes reaches past the person who crafted it: another user (a link can be shared), stored data, the server, or spend. One that only shows them an error they can leave is a rejection, unless people also reach it without crafting: old links and bookmarks, stored state, older clients, other callers;
+- it has a fix: a finding whose fix is to leave the code as it is, or that breaks nothing until a dependency or service changes undocumented behavior, is a rejection, except a missing safeguard the security reference counts;
 - a correctness problem is reachable, and a correctness or security label fits;
 - the fix compiles against the real APIs, follows the rules, and breaks nothing new: check what depends on anything it renames, removes, or repurposes, in the repo and the external consumers.
 A spec, a comment, or a claim that something is deliberate is not proof: reject only on what the code, the user's quoted words, or a standing rule shows.
 A "may" or "probably" about something you can look up is unchecked: look it up. When reading can't settle a correctness finding, reproduce it with a targeted test or a scratch script in a temp directory, if the checkout can already run them.
 Answer each with one of:
-- confirmed. Name the cause and check where else it applies, in the same code and across the change, and widen the fix; matches outside the change are pre-existing. If only the fix is wrong, correct it. If two fixes would work and you can't check which is safe, give both and say what decides.
+- confirmed. Name the cause and check where else it applies, in the same code and across the change, and widen the fix; matches outside the change are pre-existing. If only the fix is wrong, correct it. If two fixes would work and you can't check which is safe, give both and say what decides. For a low finding, say whether its failure clears on its own or with a reload and loses no data, money, or access.
 - rejected, with a one-line reason.
 - unconfirmed, for a correctness or security finding you could not settle that would matter if real, saying exactly what could not be checked, what would settle it, and whether a fix exists that is harmless if the risk is not real.
 Then name fixes that touch the same code, whether both can apply, and in what order.
@@ -83,7 +85,7 @@ Subagents use the session's model unless your instructions assign one; when they
 
 Fill the template, leaving out empty sections. Number everything straight through, risks and pre-existing findings included, so the user can pick by number: correctness first, by label, then security, design, quality, biggest simplification first, then copy. Give each of these groups a single number: docs statements, code comments, quality findings whose fix deletes code at a single site, unconfirmed risks with no safe fix, and pre-existing findings. Keep each item to its template lines: the problem in one sentence, at most three quoted lines, and the fix in a sentence or two; keep the verifiers' full fixes for Apply. Mark fixes that touch the same code on both findings, with their order or that only one can apply.
 
-Open with the apply set: every confirmed finding, the code-comment group, and every risk whose fix is harmless if the risk is not real. Skip pre-existing findings below high, design findings whose fix is more than a local edit, and fixes that are an action only the user can take. Under "Not checked", name only what this change needed and reading could not cover. List rejected claims, except quality and copy ones, which get a count. Leave out reviewers' question, misuse, and precedent lists. If nothing survived, say the change is clean in one line, plus "Not checked" and any rejected findings.
+Open with the apply set: every confirmed finding, the code-comment group, and every risk whose fix is harmless if the risk is not real. Skip pre-existing findings below high, design findings whose fix is more than a local edit, and fixes that are an action only the user can take. Group low findings whose failure clears on its own or with a reload, and loses no data, money, or access, under one number as "Minor", one line each, and leave them out of the apply set. Under "Not checked", name only what this change needed and reading could not cover. List rejected claims, except quality and copy ones, which get a count. Leave out reviewers' question, misuse, and precedent lists. If nothing survived, say the change is clean in one line, plus "Not checked" and any rejected findings.
 
 ```markdown
 Apply: <numbers, with the fix you'd pick where there are two>. Skip: <number> (<why>; instead: <action>). Reply "yes" or name numbers.
@@ -139,9 +141,14 @@ Apply: <numbers, with the fix you'd pick where there are two>. Skip: <number> (<
 10. To settle, no safe fix: 2.
     - `path:line`: <risk>. Settle by: <the action>.
 
+## Minor
+
+11. Minor, not in the apply set: 2.
+    - `path:line`: <failure, and how it clears>. Fix: <change>.
+
 ## Pre-existing
 
-11. Pre-existing: 2 follow-ups.
+12. Pre-existing: 2 follow-ups.
     - `path:line`: <problem>, shared with or copied from `path:line`. <Follow-up worth filing>.
 
 ## Not checked
@@ -160,7 +167,7 @@ Ask the user to confirm the apply set or name numbers, unless your instructions 
 
 Before the first edit, run `sh <skill dir>/scripts/snapshot.sh before`. It saves the checkout, untracked files included, as a commit under `refs/worktree/deep-review/`, leaving the index alone.
 
-Apply each fix as verified, yourself or by handing it over verbatim, correctness first, and overlapping fixes in the verifier's order. A fix you change or add is unverified: name it to the checker and in your final summary. Write each fix to the review's own standards, the rules and the references, so a fix adds no comment the quality reference would remove, such as a note on what changed. When a fix changes behavior, update the comments and docs that describe it. When one removes or renames a symbol, search the repo for the old name and update what remains; name any external consumer that still uses it instead of editing it. The guard's limits outside the checkouts hold for you too.
+Apply each fix as verified, yourself or by handing it over verbatim, correctness first, and overlapping fixes in the verifier's order. A fix you change or add is unverified: name it to the checker and in your final summary. Write each fix to the review's own standards, the rules and the references: before the first edit, read the references the applied findings come from, and `quality.md` for its comment and single-use rules, and pass the same paths to anyone you hand a fix to. A fix adds no comment the quality reference would remove, such as a note on what changed. When a fix changes behavior, update the comments and docs that describe it. When one removes or renames a symbol, search the repo for the old name and update what remains; name any external consumer that still uses it instead of editing it. The guard's limits outside the checkouts hold for you too.
 
 If code changed, not only comments, run the checks as in step 2, inferred ones only for the touched files, and say if they were inferred. If a fix breaks a check, repair it when the cause is clear or revert it, and say which.
 
@@ -169,9 +176,11 @@ Then run `sh <skill dir>/scripts/snapshot.sh after`. If code changed, have a fre
 ```
 Check fixes another agent just applied for a code review; find what they got wrong.
 Diff: git diff <before SHA> <after SHA>, in <checkout>. Rules: <paths>.
-Read first: <skill dir>/references/correctness.md and security.md, plus the others the applied findings come from.
+Read first: <skill dir>/references/correctness.md, security.md, and quality.md, plus the others the applied findings come from.
 External consumers: <as the reviewers got them>.
+Settled, so don't report against it: <as the reviewers got it>.
 Check that each fix resolves its claim and is right in itself, not only as described; that any test it adds fails without it; and that the diff breaks nothing and adds nothing the references would flag, including outside the fixed lines. Settle each problem before reporting it: look up what you can, and reproduce it when reading can't settle it.
+Report a problem only if someone hits it, acts on it, or must work around it. Mark a low one "Minor" when its failure clears on its own or with a reload and loses no data, money, or access.
 Return each problem as `path:line`, the problem in one sentence, and the fix; or "no findings".
 <guard>
 Unverified fixes: <the ones changed or added at Apply; or "none">.
@@ -179,4 +188,4 @@ Applied findings:
 <per finding: location, claim, intended fix>
 ```
 
-Apply checker findings that only correct text. Then end with what was applied, each check's result, the other checker findings numbered after the report's last finding, and any open item that needs the user and what they would do. Apply the checker findings the user picks the same way, checks included. Save `after` again after any checker fix; those fixes get no second checker.
+Apply checker findings that only correct text. Then end with what was applied, each check's result, the other checker findings numbered after the report's last finding, Minor ones under one number, and any open item that needs the user and what they would do. Apply the checker findings the user picks the same way, checks included. Save `after` again after any checker fix; those fixes get no second checker.
